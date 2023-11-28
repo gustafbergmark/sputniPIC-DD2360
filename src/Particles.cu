@@ -233,25 +233,23 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     size_t count = grd->nxn * grd->nyn * grd->nzn;
 
     grid gpu_grid;
-    grid* gpu_grid_ptr = nullptr;
+    grid* gpu_grid_ptr;
     transfer_grid(grd, &gpu_grid, &gpu_grid_ptr);
 
     EMfield gpu_field;
-    EMfield* gpu_field_ptr = nullptr;
+    EMfield* gpu_field_ptr;
     transfer_field(field, &gpu_field, &gpu_field_ptr, count);
 
-    parameters* gpu_param_ptr = nullptr;
+    parameters* gpu_param_ptr;
     transfer_param(param, &gpu_param_ptr);
 
     particles gpu_part;
-    particles* gpu_part_ptr = nullptr;
+    particles* gpu_part_ptr;
     transfer_particles(part, &gpu_part, &gpu_part_ptr, count);
-    cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess)
-            printf("Before mover kernel: Error: %s\n", cudaGetErrorString(err));    
+
     // start subcycling
     for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
-        //mover_kernel<<<blocks, TPB>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
+        mover_kernel<<<blocks, TPB>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
         cudaError_t err = cudaGetLastError();
         if (err != cudaSuccess)
             printf("Error: %s\n", cudaGetErrorString(err));
