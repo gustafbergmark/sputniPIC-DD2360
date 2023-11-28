@@ -3,7 +3,6 @@
 
 // Copies result back to CPU and deallocates
 void dealloc_grid(struct grid* gpu_grid, struct grid* gpu_grid_ptr) {
-  int len = sizeof(FPpart) * gpu_grid->nxn * gpu_grid->nyn * gpu_grid->nzn;
   // Deallocate
   cudaFree(gpu_grid->XN_flat);
   cudaFree(gpu_grid->YN_flat);
@@ -27,6 +26,8 @@ void transfer_grid(struct grid* cpu_grid, struct grid* gpu_grid,
   gpu_grid->XN = (FPpart***)gpu_grid->XN_flat;
   gpu_grid->YN = (FPpart***)gpu_grid->YN_flat;
   gpu_grid->ZN = (FPpart***)gpu_grid->ZN_flat;
+
+  std::cout << "XN " << gpu_grid->XN << " XN_flat " << gpu_grid->XN_flat << std::endl;
 
   // Copy
   cudaMemcpy(gpu_grid->XN_flat, cpu_grid->XN_flat, count, cudaMemcpyHostToDevice);
