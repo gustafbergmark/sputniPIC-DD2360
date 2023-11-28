@@ -4,13 +4,13 @@
 void field_allocate(struct grid* grd, struct EMfield* field)
 {
     // E on nodes
-    field->Ex  = newArr3<FPfield>(&field->Ex_flat, grd->nxn, grd->nyn, grd->nzn);
-    field->Ey  = newArr3<FPfield>(&field->Ey_flat, grd->nxn, grd->nyn, grd->nzn);
-    field->Ez  = newArr3<FPfield>(&field->Ez_flat, grd->nxn, grd->nyn, grd->nzn);
+    field->Ex  = newArr3<FPpart>(&field->Ex_flat, grd->nxn, grd->nyn, grd->nzn);
+    field->Ey  = newArr3<FPpart>(&field->Ey_flat, grd->nxn, grd->nyn, grd->nzn);
+    field->Ez  = newArr3<FPpart>(&field->Ez_flat, grd->nxn, grd->nyn, grd->nzn);
     // B on nodes
-    field->Bxn = newArr3<FPfield>(&field->Bxn_flat, grd->nxn, grd->nyn, grd->nzn);
-    field->Byn = newArr3<FPfield>(&field->Byn_flat, grd->nxn, grd->nyn, grd->nzn);
-    field->Bzn = newArr3<FPfield>(&field->Bzn_flat, grd->nxn, grd->nyn, grd->nzn);
+    field->Bxn = newArr3<FPpart>(&field->Bxn_flat, grd->nxn, grd->nyn, grd->nzn);
+    field->Byn = newArr3<FPpart>(&field->Byn_flat, grd->nxn, grd->nyn, grd->nzn);
+    field->Bzn = newArr3<FPpart>(&field->Bzn_flat, grd->nxn, grd->nyn, grd->nzn);
 }
 
 /** deallocate electric and magnetic field */

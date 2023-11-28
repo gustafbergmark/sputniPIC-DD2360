@@ -10,19 +10,19 @@ struct EMfield {
     // field arrays: 4D arrays
     
     /* Electric field defined on nodes: last index is component */
-    FPfield*** Ex;
-    FPfield* Ex_flat;
-    FPfield*** Ey;
-    FPfield* Ey_flat;
-    FPfield*** Ez;
-    FPfield* Ez_flat;
+    FPpart*** Ex;
+    FPpart* Ex_flat;
+    FPpart*** Ey;
+    FPpart* Ey_flat;
+    FPpart*** Ez;
+    FPpart* Ez_flat;
     /* Magnetic field defined on nodes: last index is component */
-    FPfield*** Bxn;
-    FPfield* Bxn_flat;
-    FPfield*** Byn;
-    FPfield* Byn_flat;
-    FPfield*** Bzn;
-    FPfield* Bzn_flat;
+    FPpart*** Bxn;
+    FPpart* Bxn_flat;
+    FPpart*** Byn;
+    FPpart* Byn_flat;
+    FPpart*** Bzn;
+    FPpart* Bzn_flat;
     
     
 };

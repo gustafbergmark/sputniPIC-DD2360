@@ -1,7 +1,7 @@
 #include "TransArraySpace3D.h"
 
 /** method to convert a 1D field in a 3D field not considering guard cells*/
-void solver2phys(FPfield*** vectPhys, FPfield* vectSolver, int nx, int ny, int nz){
+void solver2phys(FPpart*** vectPhys, FPpart* vectSolver, int nx, int ny, int nz){
     for (register int i=1; i < nx-1; i++)
       for (register int j=1; j < ny-1; j++)
         for (register int k=1; k < nz-1; k++)
@@ -9,7 +9,7 @@ void solver2phys(FPfield*** vectPhys, FPfield* vectSolver, int nx, int ny, int n
           
 }
 /** method to convert a 1D field in a 3D field not considering guard cells*/
-void solver2phys(FPfield*** vectPhys1, FPfield*** vectPhys2, FPfield*** vectPhys3, FPfield* vectSolver, int nx, int ny, int nz){
+void solver2phys(FPpart*** vectPhys1, FPpart*** vectPhys2, FPpart*** vectPhys3, FPpart* vectSolver, int nx, int ny, int nz){
     for (register int i=1; i < nx-1; i++)
       for (register int j=1; j < ny-1; j++)
         for (register int k=1; k < nz-1; k++){
@@ -21,7 +21,7 @@ void solver2phys(FPfield*** vectPhys1, FPfield*** vectPhys2, FPfield*** vectPhys
 
 
 /** method to convert a 3D field in a 1D field not considering guard cells*/
-void phys2solver(FPfield* vectSolver, FPfield*** vectPhys, int nx, int ny, int nz){
+void phys2solver(FPpart* vectSolver, FPpart*** vectPhys, int nx, int ny, int nz){
      for (register int i=1; i < nx-1; i++)
       for (register int j=1; j < ny-1; j++)
         for (register int k=1; k < nz-1; k++)
@@ -30,7 +30,7 @@ void phys2solver(FPfield* vectSolver, FPfield*** vectPhys, int nx, int ny, int n
 
 }
 /** method to convert a 3D field in a 1D field not considering guard cells*/
-void phys2solver(FPfield* vectSolver, FPfield*** vectPhys1, FPfield*** vectPhys2, FPfield*** vectPhys3, int nx, int ny, int nz){
+void phys2solver(FPpart* vectSolver, FPpart*** vectPhys1, FPpart*** vectPhys2, FPpart*** vectPhys3, int nx, int ny, int nz){
      for (register int i=1; i < nx-1; i++)
       for (register int j=1; j < ny-1; j++)
         for (register int k=1; k < nz-1; k++){

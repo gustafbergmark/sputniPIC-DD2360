@@ -9,26 +9,26 @@ struct EMfield_aux {
     
     
     /* Electrostatic potential defined on central points*/
-    FPfield*** Phi;
-    FPfield* Phi_flat;
+    FPpart*** Phi;
+    FPpart* Phi_flat;
 
     /* Electric field at time theta */
-    FPfield*** Exth;
-    FPfield* Exth_flat;
+    FPpart*** Exth;
+    FPpart* Exth_flat;
 
-    FPfield*** Eyth;
-    FPfield* Eyth_flat;
+    FPpart*** Eyth;
+    FPpart* Eyth_flat;
 
-    FPfield*** Ezth;
-    FPfield* Ezth_flat;
+    FPpart*** Ezth;
+    FPpart* Ezth_flat;
 
     /* Magnetic field defined on nodes: last index is component - Centers */
-    FPfield*** Bxc;
-    FPfield* Bxc_flat;
-    FPfield*** Byc;
-    FPfield* Byc_flat;
-    FPfield*** Bzc;
-    FPfield* Bzc_flat;
+    FPpart*** Bxc;
+    FPpart* Bxc_flat;
+    FPpart*** Byc;
+    FPpart* Byc_flat;
+    FPpart*** Bzc;
+    FPpart* Bzc_flat;
     
 };
 

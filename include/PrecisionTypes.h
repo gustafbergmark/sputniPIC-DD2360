@@ -4,7 +4,7 @@
 // precision for particle quanties (position, velocity, ...): choose float or double
 typedef float FPpart;
 // precision for field quantities (Ex, Bx, ...): choose float or double
-typedef float FPfield;
+typedef float FPpart;
 // precision for interpolated quanties (Ex, Bx, ...): choose float or double
 typedef float FPinterp;
 

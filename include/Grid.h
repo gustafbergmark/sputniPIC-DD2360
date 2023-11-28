@@ -28,13 +28,13 @@ struct grid {
     /** dz = space step - Z direction */
     double dz;
     /** invdx = 1/dx */
-    FPfield invdx;
+    FPpart invdx;
     /** invdy = 1/dy */
-    FPfield invdy;
+    FPpart invdy;
     /** invdz = 1/dz */
-    FPfield invdz;
+    FPpart invdz;
     /** invol = inverse of volume*/
-    FPfield invVOL;
+    FPpart invVOL;
     /** local grid boundaries coordinate  */
     double xStart, xEnd, yStart, yEnd, zStart, zEnd;
     /** domain size */
@@ -49,14 +49,14 @@ struct grid {
     
     // Nodes coordinate
     /** coordinate node X */
-    FPfield* XN_flat;
-    FPfield*** XN;
+    FPpart* XN_flat;
+    FPpart*** XN;
     /** coordinate node Y */
-    FPfield* YN_flat;
-    FPfield*** YN;
+    FPpart* YN_flat;
+    FPpart*** YN;
     /** coordinate node Z */
-    FPfield* ZN_flat;
-    FPfield*** ZN;
+    FPpart* ZN_flat;
+    FPpart*** ZN;
     
     
 };
@@ -71,43 +71,43 @@ void printGrid(struct grid*);
 void grid_deallocate(struct grid*);
 
 /** interpolation Node to Center */
-void interpN2Cfield(FPfield***, FPfield***, FPfield***, FPfield***, FPfield***, FPfield***, struct grid*);
+void interpN2Cfield(FPpart***, FPpart***, FPpart***, FPpart***, FPpart***, FPpart***, struct grid*);
     
 /** interpolation Node to Center */
 void interpC2Ninterp(FPinterp***, FPinterp***, struct grid*);
 
 /** interpolation Node to Center */
-void interpC2Nfield(FPfield***, FPfield***, struct grid*);
+void interpC2Nfield(FPpart***, FPpart***, struct grid*);
 
 /** interpolation Node to Center */
 void interpN2Cinterp(FPinterp***, FPinterp***, struct grid*);
 
 /** calculate gradient on nodes, given a scalar field defined on central points  */
-void gradC2N(FPfield***, FPfield***, FPfield***, FPfield***, grid*);
+void gradC2N(FPpart***, FPpart***, FPpart***, FPpart***, grid*);
 
 /** calculate gradient on nodes, given a scalar field defined on central points  */
-void gradN2C(FPfield***, FPfield***, FPfield***, FPfield***, grid*);
+void gradN2C(FPpart***, FPpart***, FPpart***, FPpart***, grid*);
 
 /** calculate divergence on central points, given a vector field defined on nodes  */
-void divN2C(FPfield***, FPfield***, FPfield***, FPfield***, grid*);
+void divN2C(FPpart***, FPpart***, FPpart***, FPpart***, grid*);
 
 /** calculate divergence on central points, given a Tensor field defined on nodes  */
 void divSymmTensorN2C(FPinterp***, FPinterp***, FPinterp***, FPinterp***, FPinterp***, FPinterp***, FPinterp***, FPinterp***, FPinterp***, grid*);
 
 /** calculate divergence on nodes, given a vector field defined on central points  */
-void divC2N(FPfield***, FPfield***, FPfield***, FPfield***, grid*);
+void divC2N(FPpart***, FPpart***, FPpart***, FPpart***, grid*);
 
 /** calculate curl on nodes, given a vector field defined on central points  */
-void curlC2N(FPfield***, FPfield***, FPfield***, FPfield***, FPfield***, FPfield***, grid*);
+void curlC2N(FPpart***, FPpart***, FPpart***, FPpart***, FPpart***, FPpart***, grid*);
 
 /** calculate curl on central points, given a vector field defined on nodes  */
-void curlN2C(FPfield***, FPfield***, FPfield***, FPfield***, FPfield***, FPfield***, grid*);
+void curlN2C(FPpart***, FPpart***, FPpart***, FPpart***, FPpart***, FPpart***, grid*);
 
 /** calculate laplacian on nodes, given a scalar field defined on nodes */
-void lapN2N(FPfield***, FPfield***, grid*);
+void lapN2N(FPpart***, FPpart***, grid*);
 
 /** calculate laplacian on central points, given a scalar field defined on central points */
-void lapC2C(FPfield***, FPfield***, grid*);
+void lapC2C(FPpart***, FPpart***, grid*);
 
 
 #endif

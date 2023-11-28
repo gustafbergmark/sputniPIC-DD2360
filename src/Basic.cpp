@@ -2,7 +2,7 @@
 #include "Basic.h"
 
 /** method to calculate the parallel dot product with vect1, vect2 having the ghost cells*/
-double dotP(FPfield *vect1, FPfield *vect2, int n) {
+double dotP(FPpart *vect1, FPpart *vect2, int n) {
   double result = 0;
   double local_result = 0;
   for (register int i = 0; i < n; i++)
@@ -12,14 +12,14 @@ double dotP(FPfield *vect1, FPfield *vect2, int n) {
 
 }
 /** method to calculate dot product */
-double dot(FPfield *vect1, FPfield *vect2, int n) {
+double dot(FPpart *vect1, FPpart *vect2, int n) {
   double result = 0;
   for (int i = 0; i < n; i++)
     result += vect1[i] * vect2[i];
   return (result);
 }
 /** method to calculate the square norm of a vector */
-double norm2(FPfield **vect, int nx, int ny) {
+double norm2(FPpart **vect, int nx, int ny) {
   double result = 0;
   for (int i = 0; i < nx; i++)
     for (int j = 0; j < ny; j++)
@@ -27,7 +27,7 @@ double norm2(FPfield **vect, int nx, int ny) {
   return (result);
 }
 /** method to calculate the square norm of a vector */
-double norm2(FPfield ***vect, int nx, int ny) {
+double norm2(FPpart ***vect, int nx, int ny) {
   double result = 0;
   for (int i = 0; i < nx; i++)
     for (int j = 0; j < ny; j++)
@@ -35,7 +35,7 @@ double norm2(FPfield ***vect, int nx, int ny) {
   return (result);
 }
 /** method to calculate the square norm of a vector */
-double norm2(FPfield *vect, int nx) {
+double norm2(FPpart *vect, int nx) {
   double result = 0;
   for (int i = 0; i < nx; i++)
     result += vect[i] * vect[i];
@@ -45,7 +45,7 @@ double norm2(FPfield *vect, int nx) {
 
 
 /** method to calculate the parallel dot product */
-double norm2P(FPfield ***vect, int nx, int ny, int nz) {
+double norm2P(FPpart ***vect, int nx, int ny, int nz) {
   double result = 0;
   double local_result = 0;
   for (int i = 0; i < nx; i++)
@@ -58,7 +58,7 @@ double norm2P(FPfield ***vect, int nx, int ny, int nz) {
   return (result);
 }
 /** method to calculate the parallel norm of a vector on different processors with the ghost cell */
-double norm2P(FPfield *vect, int n) {
+double norm2P(FPpart *vect, int n) {
   double result = 0;
   double local_result = 0;
   for (int i = 0; i < n; i++)
@@ -68,9 +68,9 @@ double norm2P(FPfield *vect, int n) {
   return (result);
 }
 /** method to calculate the parallel norm of a vector on different processors with the gost cell*/
-double normP(FPfield *vect, int n) {
-  FPfield result = 0.0;
-  FPfield local_result = 0.0;
+double normP(FPpart *vect, int n) {
+  FPpart result = 0.0;
+  FPpart local_result = 0.0;
   for (register int i = 0; i < n; i++)
     local_result += vect[i] * vect[i];
 
@@ -81,19 +81,19 @@ double normP(FPfield *vect, int n) {
 
 }
 /** method to calculate the difference of two vectors*/
-void sub(FPfield *res, FPfield *vect1, FPfield *vect2, int n) {
+void sub(FPpart *res, FPpart *vect1, FPpart *vect2, int n) {
   for (register int i = 0; i < n; i++)
     res[i] = vect1[i] - vect2[i];
 }
 /** method to calculate the sum of two vectors vector1 = vector1 + vector2*/
-void sum(FPfield *vect1, FPfield *vect2, int n) {
+void sum(FPpart *vect1, FPpart *vect2, int n) {
   for (register int i = 0; i < n; i++)
     vect1[i] += vect2[i];
 
 
 }
 /** method to calculate the sum of two vectors vector1 = vector1 + vector2*/
-void sum(FPfield  ***vect1, FPfield ***vect2, int nx, int ny, int nz) {
+void sum(FPpart  ***vect1, FPpart ***vect2, int nx, int ny, int nz) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -101,14 +101,14 @@ void sum(FPfield  ***vect1, FPfield ***vect2, int nx, int ny, int nz) {
 }
 
 /** method to calculate the sum of two vectors vector1 = vector1 + vector2*/
-void sum(FPfield  ***vect1, FPfield  ***vect2, int nx, int ny) {
+void sum(FPpart  ***vect1, FPpart  ***vect2, int nx, int ny) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       vect1[i][j][0] += vect2[i][j][0];
 }
 
 /** method to calculate the sum of two vectors vector1 = vector1 + vector2*/
-void sum(FPfield  ***vect1, FPfield ****vect2, int nx, int ny, int nz, int ns) {
+void sum(FPpart  ***vect1, FPpart ****vect2, int nx, int ny, int nz, int ns) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -116,13 +116,13 @@ void sum(FPfield  ***vect1, FPfield ****vect2, int nx, int ny, int nz, int ns) {
 }
 
 /** method to calculate the sum of two vectors vector1 = vector1 + vector2*/
-void sum(FPfield  ***vect1, FPfield  ****vect2, int nx, int ny, int ns) {
+void sum(FPpart  ***vect1, FPpart  ****vect2, int nx, int ny, int ns) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       vect1[i][j][0] += vect2[ns][i][j][0];
 }
 /** method to calculate the subtraction of two vectors vector1 = vector1 - vector2*/
-void sub(FPfield ***vect1, FPfield ***vect2, int nx, int ny, int nz) {
+void sub(FPpart ***vect1, FPpart ***vect2, int nx, int ny, int nz) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -132,7 +132,7 @@ void sub(FPfield ***vect1, FPfield ***vect2, int nx, int ny, int nz) {
 }
 
 /** method to calculate the subtraction of two vectors vector1 = vector1 - vector2*/
-void sub(FPfield ***vect1, FPfield ***vect2, int nx, int ny) {
+void sub(FPpart ***vect1, FPpart ***vect2, int nx, int ny) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       vect1[i][j][0] -= vect2[i][j][0];
@@ -150,13 +150,13 @@ void sum4(double ***vect1, double alfa, double ***vect2, double beta, double ***
 
 }
 /** method to calculate the scalar-vector product */
-void scale(FPfield *vect, FPfield  alfa, int n) {
+void scale(FPpart *vect, FPpart  alfa, int n) {
   for (register int i = 0; i < n; i++)
     vect[i] *= alfa;
 }
 
 /** method to calculate the scalar-vector product */
-void scale(FPfield  ***vect, FPfield  alfa, int nx, int ny) {
+void scale(FPpart  ***vect, FPpart  alfa, int nx, int ny) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       vect[i][j][0] *= alfa;
@@ -164,7 +164,7 @@ void scale(FPfield  ***vect, FPfield  alfa, int nx, int ny) {
 
 
 /** method to calculate the scalar-vector product */
-void scale(FPfield  ***vect, FPfield alfa, int nx, int ny, int nz) {
+void scale(FPpart  ***vect, FPpart alfa, int nx, int ny, int nz) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -178,7 +178,7 @@ void scale(double vect[][2][2], double alfa, int nx, int ny, int nz) {
         vect[i][j][k] *= alfa;
 }
 /** method to calculate the scalar-vector product */
-void scale(FPfield  ***vect1, FPfield ***vect2, FPfield  alfa, int nx, int ny, int nz) {
+void scale(FPpart  ***vect1, FPpart ***vect2, FPpart  alfa, int nx, int ny, int nz) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -186,20 +186,20 @@ void scale(FPfield  ***vect1, FPfield ***vect2, FPfield  alfa, int nx, int ny, i
 }
 
 /** method to calculate the scalar-vector product */
-void scale(FPfield  ***vect1, FPfield  ***vect2, double alfa, int nx, int ny) {
+void scale(FPpart  ***vect1, FPpart  ***vect2, double alfa, int nx, int ny) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       vect1[i][j][0] = vect2[i][j][0] * alfa;
 }
 
 /** method to calculate the scalar-vector product */
-void scale(FPfield *vect1, FPfield *vect2, double alfa, int n) {
+void scale(FPpart *vect1, FPpart *vect2, double alfa, int n) {
   for (register int i = 0; i < n; i++)
     vect1[i] = vect2[i] * alfa;
 }
 
 /** method to calculate vector1 = vector1 + alfa*vector2   */
-void addscale(FPfield alfa, FPfield ***vect1, FPfield ***vect2, int nx, int ny, int nz) {
+void addscale(FPpart alfa, FPpart ***vect1, FPpart ***vect2, int nx, int ny, int nz) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -214,25 +214,25 @@ void addscale(double alfa, double vect1[][2][2], double vect2[][2][2], int nx, i
 
 }
 /** method to calculate vector1 = vector1 + alfa*vector2   */
-void addscale(FPfield alfa, FPfield ***vect1, FPfield ***vect2, int nx, int ny) {
+void addscale(FPpart alfa, FPpart ***vect1, FPpart ***vect2, int nx, int ny) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       vect1[i][j][0] += alfa * vect2[i][j][0];
 }
 /** method to calculate vector1 = vector1 + alfa*vector2   */
-void addscale(FPfield alfa, FPfield *vect1, FPfield *vect2, int n) {
+void addscale(FPpart alfa, FPpart *vect1, FPpart *vect2, int n) {
   for (register int i = 0; i < n; i++)
     vect1[i] += alfa * vect2[i];
 
 }
 /** method to calculate vector1 = beta*vector1 + alfa*vector2   */
-void addscale(FPfield alfa, FPfield beta, FPfield *vect1, FPfield *vect2, int n) {
+void addscale(FPpart alfa, FPpart beta, FPpart *vect1, FPpart *vect2, int n) {
   for (register int i = 0; i < n; i++)
     vect1[i] = vect1[i] * beta + alfa * vect2[i];
 
 }
 /** method to calculate vector1 = beta*vector1 + alfa*vector2 */
-void addscale(FPfield alfa, FPfield beta, FPfield ***vect1, FPfield ***vect2, int nx, int ny, int nz) {
+void addscale(FPpart alfa, FPpart beta, FPpart ***vect1, FPpart ***vect2, int nx, int ny, int nz) {
 
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
@@ -297,7 +297,7 @@ void proddiv(double ***vect1, double ***vect2, double alfa, double ***vect3, dou
   // ***vect1++ = (***vect2++ + alfa*((***vect3++)*(***vect4++) - (***vect5++)*(***vect6++)) + beta*(***vect7++)*(***vect8++))/(1+gamma*(***vect9++));
 }
 /** method to calculate the opposite of a vector */
-void neg(FPfield ***vect, int nx, int ny, int nz) {
+void neg(FPpart ***vect, int nx, int ny, int nz) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -307,18 +307,18 @@ void neg(FPfield ***vect, int nx, int ny, int nz) {
 }
 
 /** method to calculate the opposite of a vector */
-void neg(FPfield ***vect, int nx, int ny) {
+void neg(FPpart ***vect, int nx, int ny) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       vect[i][j][0] = -vect[i][j][0];
 }
 /** method to calculate the opposite of a vector */
-void neg(FPfield ***vect, int nx) {
+void neg(FPpart ***vect, int nx) {
   for (register int i = 0; i < nx; i++)
     vect[i][0][0] = -vect[i][0][0];
 }
 /** method to calculate the opposite of a vector */
-void neg(FPfield *vect, int n) {
+void neg(FPpart *vect, int n) {
   for (register int i = 0; i < n; i++)
     vect[i] = -vect[i];
 
@@ -361,7 +361,7 @@ void eq(double *vect1, double *vect2, int n) {
     vect1[i] = vect2[i];
 }
 /** method to set a vector to a Value */
-void eqValue(FPfield value, FPfield ***vect, int nx, int ny, int nz) {
+void eqValue(FPpart value, FPpart ***vect, int nx, int ny, int nz) {
   for (register int i = 0; i < nx; i++)
     for (register int j = 0; j < ny; j++)
       for (register int k = 0; k < nz; k++)
@@ -389,18 +389,18 @@ void eqValue(double value, double ***vect, int nx) {
 
 }
 /** method to set a vector to a Value */
-void eqValue(FPfield value, FPfield *vect, int n) {
+void eqValue(FPpart value, FPpart *vect, int n) {
   for (register int i = 0; i < n; i++)
     vect[i] = value;
 }
 /** method to put a column in a matrix 2D */
-void putColumn(FPfield **Matrix, FPfield *vect, int column, int n) {
+void putColumn(FPpart **Matrix, FPpart *vect, int column, int n) {
   for (int i = 0; i < n; i++)
     Matrix[i][column] = vect[i];
 
 }
 /** method to get a column in a matrix 2D */
-void getColumn(FPfield *vect, FPfield **Matrix, int column, int n) {
+void getColumn(FPpart *vect, FPpart **Matrix, int column, int n) {
   for (int i = 0; i < n; i++)
     vect[i] = Matrix[i][column];
 }

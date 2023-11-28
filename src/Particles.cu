@@ -1,5 +1,6 @@
 #include "Particles.h"
 #include "Alloc.h"
+#include "Copy.h"
 #include <cuda.h>
 #include <cuda_runtime.h>
 
@@ -72,38 +73,26 @@ void particle_deallocate(struct particles* part)
     delete[] part->q;
 }
 
-int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param) {
-    // print species and subcycling
-    std::cout << "***  MOVER with SUBCYCLYING "<< param->n_sub_cycles << " - species " << part->species_ID << " ***" << std::endl;
- 
-    // auxiliary variables
+__global__ void mover_kernel(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param, int len) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i >= len) return;
+
+     // auxiliary variables
     FPpart dt_sub_cycling = (FPpart) param->dt/((double) part->n_sub_cycles);
     FPpart dto2 = .5*dt_sub_cycling, qomdt2 = part->qom*dto2/param->c;
     FPpart omdtsq, denom, ut, vt, wt, udotb;
     
     // local (to the particle) electric and magnetic field
-    FPfield Exl=0.0, Eyl=0.0, Ezl=0.0, Bxl=0.0, Byl=0.0, Bzl=0.0;
+    FPpart Exl=0.0, Eyl=0.0, Ezl=0.0, Bxl=0.0, Byl=0.0, Bzl=0.0;
     
     // interpolation densities
     int ix,iy,iz;
-    FPfield weight[2][2][2];
-    FPfield xi[2], eta[2], zeta[2];
+    FPpart weight[2][2][2];
+    FPpart xi[2], eta[2], zeta[2];
     
     // intermediate particle position and velocity
     FPpart xptilde, yptilde, zptilde, uptilde, vptilde, wptilde;
 
-    // start subcycling
-    for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
-        
-    } // end of one particle
-                                                                        
-    return(0); // exit succcesfully
-    
-}
-
-__global__ void mover_kernel(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param, int len) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i >= len) return;
 
     xptilde = part->x[i];
     yptilde = part->y[i];
@@ -233,6 +222,43 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
 
 }
 
+
+int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param) {
+    // print species and subcycling
+    std::cout << "***  MOVER with SUBCYCLYING "<< param->n_sub_cycles << " - species " << part->species_ID << " ***" << std::endl;
+
+    int TPB = 512;
+    int blocks = (part->nop - 1) / TPB + 1;
+
+    size_t count = grd->nxn * grd->nyn * grd->nzn;
+
+    grid gpu_grid;
+    grid* gpu_grid_ptr;
+    transfer_grid(grd, &gpu_grid, &gpu_grid_ptr);
+
+    EMfield gpu_field;
+    EMfield* gpu_field_ptr;
+    transfer_field(field, &gpu_field, &gpu_field_ptr, count);
+
+    parameters* gpu_param_ptr;
+    transfer_param(param, &gpu_param_ptr);
+
+    particles gpu_part;
+    particles* gpu_part_ptr;
+    transfer_particles(part, &gpu_part, &gpu_part_ptr, count);    
+    // start subcycling
+    for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
+        mover_kernel<<<blocks, TPB>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
+    }
+
+    get_grid(&gpu_grid, grd, gpu_grid_ptr);
+    get_field(&gpu_field, field, gpu_field_ptr, count);
+    get_particles(&gpu_part, part, gpu_part_ptr, count);
+                                                                        
+    return(0); // exit succcesfully
+    
+}
+
 /** particle mover */
 int mover_PC(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param)
 {
@@ -245,12 +271,12 @@ int mover_PC(struct particles* part, struct EMfield* field, struct grid* grd, st
     FPpart omdtsq, denom, ut, vt, wt, udotb;
     
     // local (to the particle) electric and magnetic field
-    FPfield Exl=0.0, Eyl=0.0, Ezl=0.0, Bxl=0.0, Byl=0.0, Bzl=0.0;
+    FPpart Exl=0.0, Eyl=0.0, Ezl=0.0, Bxl=0.0, Byl=0.0, Bzl=0.0;
     
     // interpolation densities
     int ix,iy,iz;
-    FPfield weight[2][2][2];
-    FPfield xi[2], eta[2], zeta[2];
+    FPpart weight[2][2][2];
+    FPpart xi[2], eta[2], zeta[2];
     
     // intermediate particle position and velocity
     FPpart xptilde, yptilde, zptilde, uptilde, vptilde, wptilde;

@@ -23,10 +23,10 @@ void setGrid(struct parameters* param, struct grid* grd)
     grd->dz = param->Lz / param->nzc;
     
     // These are used in mover and interpolation from particles
-    grd->invVOL = (FPfield) 1.0 / (grd->dx * grd->dy * grd->dz);
-    grd->invdx = (FPfield) 1.0 / grd->dx;
-    grd->invdy = (FPfield) 1.0 / grd->dy;
-    grd->invdz = (FPfield) 1.0 / grd->dz;
+    grd->invVOL = (FPpart) 1.0 / (grd->dx * grd->dy * grd->dz);
+    grd->invdx = (FPpart) 1.0 / grd->dx;
+    grd->invdy = (FPpart) 1.0 / grd->dy;
+    grd->invdz = (FPpart) 1.0 / grd->dz;
     
     // local grid dimensions and boundaries of active nodes
     grd->xStart = 0.0;
@@ -47,18 +47,18 @@ void setGrid(struct parameters* param, struct grid* grd)
     grd->PERIODICZ = param->PERIODICZ;
     
     // allocate grid points - nodes
-    grd->XN  = newArr3<FPfield>(&grd->XN_flat, grd->nxn, grd->nyn, grd->nzn);
-    grd->YN  = newArr3<FPfield>(&grd->YN_flat, grd->nxn, grd->nyn, grd->nzn);
-    grd->ZN  = newArr3<FPfield>(&grd->ZN_flat, grd->nxn, grd->nyn, grd->nzn);
+    grd->XN  = newArr3<FPpart>(&grd->XN_flat, grd->nxn, grd->nyn, grd->nzn);
+    grd->YN  = newArr3<FPpart>(&grd->YN_flat, grd->nxn, grd->nyn, grd->nzn);
+    grd->ZN  = newArr3<FPpart>(&grd->ZN_flat, grd->nxn, grd->nyn, grd->nzn);
     
     
     // calculate the coordinates - Nodes
     for (int i = 0; i < grd->nxn; i++) {
         for (int j = 0; j < grd->nyn; j++) {
             for (int k = 0; k < grd->nzn; k++) {
-                grd->XN[i][j][k] = (FPfield) (grd->xStart + (i - 1) * grd->dx);
-                grd->YN[i][j][k] = (FPfield) (grd->yStart + (j - 1) * grd->dy);
-                grd->ZN[i][j][k] = (FPfield) (grd->zStart + (k - 1) * grd->dz);
+                grd->XN[i][j][k] = (FPpart) (grd->xStart + (i - 1) * grd->dx);
+                grd->YN[i][j][k] = (FPpart) (grd->yStart + (j - 1) * grd->dy);
+                grd->ZN[i][j][k] = (FPpart) (grd->zStart + (k - 1) * grd->dz);
             }
         }
     }
@@ -86,7 +86,7 @@ void grid_deallocate(struct grid* grd)
 
 
 /** interpolation Node to Center */
-void interpN2Cfield(FPfield ***vecFieldCx, FPfield ***vecFieldCy, FPfield ***vecFieldCz,FPfield ***vecFieldNx, FPfield ***vecFieldNy, FPfield ***vecFieldNz, struct grid* grd)
+void interpN2Cfield(FPpart ***vecFieldCx, FPpart ***vecFieldCy, FPpart ***vecFieldCz,FPpart ***vecFieldNx, FPpart ***vecFieldNy, FPpart ***vecFieldNz, struct grid* grd)
 {
     
     
@@ -123,7 +123,7 @@ void interpC2Ninterp(FPinterp ***vecFieldN, FPinterp ***vecFieldC, struct grid* 
 }
 
 /** interpolation Node to Center */
-void interpC2Nfield(FPfield ***vecFieldN, FPfield ***vecFieldC, struct grid* grd)
+void interpC2Nfield(FPpart ***vecFieldN, FPpart ***vecFieldC, struct grid* grd)
 {
     // nodes
     int nxn = grd->nxn;
@@ -157,7 +157,7 @@ void interpN2Cinterp(FPinterp ***vecFieldC, FPinterp ***vecFieldN, struct grid* 
 
 
 /** calculate gradient on nodes, given a scalar field defined on central points  */
-void gradC2N(FPfield ***gradXN, FPfield ***gradYN, FPfield ***gradZN, FPfield ***scFieldC, grid* grd)
+void gradC2N(FPpart ***gradXN, FPpart ***gradYN, FPpart ***gradZN, FPpart ***scFieldC, grid* grd)
 {
     
     // nodes
@@ -166,9 +166,9 @@ void gradC2N(FPfield ***gradXN, FPfield ***gradYN, FPfield ***gradZN, FPfield **
     int nzn = grd->nzn;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
     
     for (register int i = 1; i < nxn - 1; i++)
@@ -185,7 +185,7 @@ void gradC2N(FPfield ***gradXN, FPfield ***gradYN, FPfield ***gradZN, FPfield **
 
 
 /** calculate gradient on nodes, given a scalar field defined on central points  */
-void gradN2C(FPfield ***gradXC, FPfield ***gradYC, FPfield ***gradZC, FPfield ***scFieldN, grid* grd)
+void gradN2C(FPpart ***gradXC, FPpart ***gradYC, FPpart ***gradZC, FPpart ***scFieldN, grid* grd)
 {
     
     // center cells
@@ -194,9 +194,9 @@ void gradN2C(FPfield ***gradXC, FPfield ***gradYC, FPfield ***gradZC, FPfield **
     int nzc = grd->nzc;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
     
     
@@ -212,7 +212,7 @@ void gradN2C(FPfield ***gradXC, FPfield ***gradYC, FPfield ***gradZC, FPfield **
 
 
 /** calculate divergence on central points, given a vector field defined on nodes  */
-void divN2C(FPfield ***divC, FPfield ***vecFieldXN, FPfield ***vecFieldYN, FPfield ***vecFieldZN, grid* grd)
+void divN2C(FPpart ***divC, FPpart ***vecFieldXN, FPpart ***vecFieldYN, FPpart ***vecFieldZN, grid* grd)
 {
     
     
@@ -222,15 +222,15 @@ void divN2C(FPfield ***divC, FPfield ***vecFieldXN, FPfield ***vecFieldYN, FPfie
     int nzc = grd->nzc;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
     
     // three components of field solver
-    FPfield compX;
-    FPfield compY;
-    FPfield compZ;
+    FPpart compX;
+    FPpart compY;
+    FPpart compZ;
     
     
     for (register int i = 1; i < nxc - 1; i++)
@@ -290,7 +290,7 @@ void divSymmTensorN2C(FPinterp ***divCX, FPinterp ***divCY, FPinterp ***divCZ, F
 
 
 /** calculate divergence on nodes, given a vector field defined on central points  */
-void divC2N(FPfield ***divN, FPfield  ***vecFieldXC, FPfield  ***vecFieldYC, FPfield  ***vecFieldZC, grid* grd)
+void divC2N(FPpart ***divN, FPpart  ***vecFieldXC, FPpart  ***vecFieldYC, FPpart  ***vecFieldZC, grid* grd)
 {
    
     // nodes
@@ -299,14 +299,14 @@ void divC2N(FPfield ***divN, FPfield  ***vecFieldXC, FPfield  ***vecFieldYC, FPf
     int nzn = grd->nzn;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
     
-    FPfield  compX;
-    FPfield  compY;
-    FPfield  compZ;
+    FPpart  compX;
+    FPpart  compY;
+    FPpart  compZ;
     
     for (register int i = 1; i < nxn - 1; i++)
         for (register int j = 1; j < nyn - 1; j++)
@@ -320,7 +320,7 @@ void divC2N(FPfield ***divN, FPfield  ***vecFieldXC, FPfield  ***vecFieldYC, FPf
 
 
 /** calculate curl on nodes, given a vector field defined on central points  */
-void curlC2N(FPfield ***curlXN, FPfield ***curlYN, FPfield ***curlZN, FPfield ***vecFieldXC, FPfield ***vecFieldYC, FPfield ***vecFieldZC, grid* grd)
+void curlC2N(FPpart ***curlXN, FPpart ***curlYN, FPpart ***curlZN, FPpart ***vecFieldXC, FPpart ***vecFieldYC, FPpart ***vecFieldZC, grid* grd)
 {
     // nodes
     int nxn = grd->nxn;
@@ -328,15 +328,15 @@ void curlC2N(FPfield ***curlXN, FPfield ***curlYN, FPfield ***curlZN, FPfield **
     int nzn = grd->nzn;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
     
     
-    FPfield compZDY, compYDZ;
-    FPfield compXDZ, compZDX;
-    FPfield compYDX, compXDY;
+    FPpart compZDY, compYDZ;
+    FPpart compXDZ, compZDX;
+    FPpart compYDX, compXDY;
     
     
     
@@ -362,7 +362,7 @@ void curlC2N(FPfield ***curlXN, FPfield ***curlYN, FPfield ***curlZN, FPfield **
 }
 
 /** calculate curl on central points, given a vector field defined on nodes  */
-void curlN2C(FPfield ***curlXC, FPfield ***curlYC, FPfield ***curlZC, FPfield ***vecFieldXN, FPfield ***vecFieldYN, FPfield ***vecFieldZN, grid* grd)
+void curlN2C(FPpart ***curlXC, FPpart ***curlYC, FPpart ***curlZC, FPpart ***vecFieldXN, FPpart ***vecFieldYN, FPpart ***vecFieldZN, grid* grd)
 {
     // center
     int nxc = grd->nxc;
@@ -370,13 +370,13 @@ void curlN2C(FPfield ***curlXC, FPfield ***curlYC, FPfield ***curlZC, FPfield **
     int nzc = grd->nzc;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
-    FPfield compZDY, compYDZ;
-    FPfield compXDZ, compZDX;
-    FPfield compYDX, compXDY;
+    FPpart compZDY, compYDZ;
+    FPpart compXDZ, compZDX;
+    FPpart compYDX, compXDY;
     
     
     for (register int i = 1; i < nxc - 1; i++)
@@ -402,7 +402,7 @@ void curlN2C(FPfield ***curlXC, FPfield ***curlYC, FPfield ***curlZC, FPfield **
     
 }
 /** calculate laplacian on nodes, given a scalar field defined on nodes */
-void lapN2N(FPfield ***lapN, FPfield ***scFieldN,  grid* grd)
+void lapN2N(FPpart ***lapN, FPpart ***scFieldN,  grid* grd)
 {
     // nodes
     int nxn = grd->nxn;
@@ -410,9 +410,9 @@ void lapN2N(FPfield ***lapN, FPfield ***scFieldN,  grid* grd)
     int nzn = grd->nzn;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
     for (register int i = 1; i < nxn - 1; i++)
         for (register int j = 1; j < nyn - 1; j++)
@@ -425,7 +425,7 @@ void lapN2N(FPfield ***lapN, FPfield ***scFieldN,  grid* grd)
 
 
 /** calculate laplacian on central points, given a scalar field defined on central points */
-void lapC2C(FPfield ***lapC, FPfield ***scFieldC, grid* grd)
+void lapC2C(FPpart ***lapC, FPpart ***scFieldC, grid* grd)
 {
     // center
     int nxc = grd->nxc;
@@ -433,9 +433,9 @@ void lapC2C(FPfield ***lapC, FPfield ***scFieldC, grid* grd)
     int nzc = grd->nzc;
     
     // inv. dx, dy, dz
-    FPfield invdx = grd->invdx;
-    FPfield invdy = grd->invdy;
-    FPfield invdz = grd->invdz;
+    FPpart invdx = grd->invdx;
+    FPpart invdy = grd->invdy;
+    FPpart invdz = grd->invdz;
     
     for (register int i = 1; i < nxc - 1; i++)
         for (register int j = 1; j < nyc - 1; j++)
