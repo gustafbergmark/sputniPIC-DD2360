@@ -74,28 +74,6 @@ void particle_deallocate(struct particles* part)
     delete[] part->q;
 }
 
-__device__ FPpart ***toArr3(FPpart **in, size_t sz1, size_t sz2, size_t sz3) {
-    for(int i = 0; i < sz1; i++) {
-        for(int j = 0; j < sz2; j++) {
-            for(int k = 0; k < sz3; k++) {
-        
-            }
-        }
-    }
-}
-{
-  type***arr = newArr2<type*>(sz1,sz2);
-  type**arr2 = *arr;
-  type *ptr = *in;
-  size_t szarr2 = sz1*sz2;
-  for(size_t i=0;i<szarr2;i++) {
-    arr2[i] = ptr;
-    ptr += sz3;
-  }
-  return arr;
-}
-
-
 __global__ void mover_kernel(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param, int len) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= len) return;
@@ -135,15 +113,10 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
 
         
         // calculate weights
-        printf("XN %p XN_flat %p", grd->XN, grd->XN_flat);
-        printf("XN_flat[0] %f", grd->XN_flat[0]);
-        printf("XN[0] %p", grd->XN[0]);
-        printf("XN[0][0] %p", grd->XN[0][0]);
-        printf("XN[0][0][0] %f", grd->XN[0][0][0]);
-        xi[0]   = part->x[i] - grd->XN[0][0][0];//grd->XN[ix - 1][iy][iz];
+        xi[0]   = part->x[i] - grd->XN_flat[((ix - 1) * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz];
         if (i == 0) printf("checkpoint 2.1.1\n");
-        eta[0]  = part->y[i] - grd->YN[ix][iy - 1][iz];
-        zeta[0] = part->z[i] - grd->ZN[ix][iy][iz - 1];
+        eta[0]  = part->y[i] - grd->YN_flat[(ix * grd->nyn * grd-> nzn) + ((iy - 1) * grd->nzn) + iz];
+        zeta[0] = part->z[i] - grd->ZN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz - 1];
         if (i == 0) printf("checkpoint 2.2\n");
         xi[1]   = grd->XN[ix][iy][iz] - part->x[i];
         eta[1]  = grd->YN[ix][iy][iz] - part->y[i];
