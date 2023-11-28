@@ -74,7 +74,8 @@ void particle_deallocate(struct particles* part)
 }
 
 __global__ void mover_kernel(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param, int len) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    //int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int i = 0;
     if (i >= len) return;
 
      // auxiliary variables
