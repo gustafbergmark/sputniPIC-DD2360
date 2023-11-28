@@ -1,5 +1,20 @@
 #include "Copy.h"
+#include "Alloc.h"
 
+
+template <class type>
+inline type ***toArr3(type **in, size_t sz1, size_t sz2, size_t sz3)
+{
+  type***arr = newArr2<type*>(sz1,sz2);
+  type**arr2 = *arr;
+  type *ptr = *in;
+  size_t szarr2 = sz1*sz2;
+  for(size_t i=0;i<szarr2;i++) {
+    arr2[i] = ptr;
+    ptr += sz3;
+  }
+  return arr;
+}
 
 // Copies result back to CPU and deallocates
 void dealloc_grid(struct grid* gpu_grid, struct grid* gpu_grid_ptr) {
@@ -23,9 +38,9 @@ void transfer_grid(struct grid* cpu_grid, struct grid* gpu_grid,
   cudaMalloc(gpu_grid_ptr, sizeof(grid));
 
   // update unflattened pointer
-  gpu_grid->XN = (FPpart***)gpu_grid->XN_flat;
-  gpu_grid->YN = (FPpart***)gpu_grid->YN_flat;
-  gpu_grid->ZN = (FPpart***)gpu_grid->ZN_flat;
+  gpu_grid->XN = toArr3<FPpart>(&gpu_grid->XN_flat, gpu_grid->nxn, gpu_grid->nyn, gpu_grid->nzn);
+  gpu_grid->XN = toArr3<FPpart>(&gpu_grid->XN_flat, gpu_grid->nxn, gpu_grid->nyn, gpu_grid->nzn);
+  gpu_grid->XN = toArr3<FPpart>(&gpu_grid->XN_flat, gpu_grid->nxn, gpu_grid->nyn, gpu_grid->nzn);
 
   std::cout << "XN " << gpu_grid->XN << " XN_flat " << gpu_grid->XN_flat << std::endl;
 
