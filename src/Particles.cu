@@ -113,7 +113,8 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
 
         
         // calculate weights
-        xi[0]   = part->x[i] - grd->XN[ix - 1][iy][iz];
+        xi[0]   = 1.0; //part->x[i] - grd->XN[ix - 1][iy][iz];
+        if (i == 0) printf("checkpoint 2.1.1\n");
         eta[0]  = part->y[i] - grd->YN[ix][iy - 1][iz];
         zeta[0] = part->z[i] - grd->ZN[ix][iy][iz - 1];
         if (i == 0) printf("checkpoint 2.2\n");
