@@ -240,7 +240,7 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     EMfield* gpu_field_ptr = nullptr;
     transfer_field(field, &gpu_field, &gpu_field_ptr, count);
 
-    parameters* gpu_param_ptr;
+    parameters* gpu_param_ptr = nullptr;
     transfer_param(param, &gpu_param_ptr);
 
     particles gpu_part;
@@ -249,6 +249,9 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     // start subcycling
     for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
         mover_kernel<<<blocks, TPB>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
+        cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess)
+            printf("Error: %s\n", cudaGetErrorString(err));
     }
     // Sync
     cudaDeviceSynchronize();
