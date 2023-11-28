@@ -235,6 +235,7 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
 int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param) {
     // print species and subcycling
     std::cout << "***  MOVER with SUBCYCLYING "<< param->n_sub_cycles << " - species " << part->species_ID << " ***" << std::endl;
+    std::cout << "npmax "<< part->npmax << " nop " << part->nop << std::endl;
 
     int TPB = 512;
     int blocks = (part->nop - 1) / TPB + 1;
@@ -258,7 +259,7 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
 
     // start subcycling
     for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
-        mover_kernel<<<blocks, TPB>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
+        mover_kernel<<<1,1>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
         // Sync
         cudaDeviceSynchronize();
         cudaError_t err = cudaGetLastError();
