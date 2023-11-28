@@ -37,13 +37,6 @@ void transfer_grid(struct grid* cpu_grid, struct grid* gpu_grid,
   cudaMalloc(&gpu_grid->ZN_flat, count);
   cudaMalloc(gpu_grid_ptr, sizeof(grid));
 
-  // update unflattened pointer
-  gpu_grid->XN = toArr3<FPpart>(&gpu_grid->XN_flat, gpu_grid->nxn, gpu_grid->nyn, gpu_grid->nzn);
-  gpu_grid->XN = toArr3<FPpart>(&gpu_grid->XN_flat, gpu_grid->nxn, gpu_grid->nyn, gpu_grid->nzn);
-  gpu_grid->XN = toArr3<FPpart>(&gpu_grid->XN_flat, gpu_grid->nxn, gpu_grid->nyn, gpu_grid->nzn);
-
-  std::cout << "XN " << gpu_grid->XN << " XN_flat " << gpu_grid->XN_flat << std::endl;
-
   // Copy
   cudaMemcpy(gpu_grid->XN_flat, cpu_grid->XN_flat, count, cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_grid->YN_flat, cpu_grid->YN_flat, count, cudaMemcpyHostToDevice);

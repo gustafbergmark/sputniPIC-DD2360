@@ -74,6 +74,28 @@ void particle_deallocate(struct particles* part)
     delete[] part->q;
 }
 
+__device__ FPpart ***toArr3(FPpart **in, size_t sz1, size_t sz2, size_t sz3) {
+    for(int i = 0; i < sz1; i++) {
+        for(int j = 0; j < sz2; j++) {
+            for(int k = 0; k < sz3; k++) {
+        
+            }
+        }
+    }
+}
+{
+  type***arr = newArr2<type*>(sz1,sz2);
+  type**arr2 = *arr;
+  type *ptr = *in;
+  size_t szarr2 = sz1*sz2;
+  for(size_t i=0;i<szarr2;i++) {
+    arr2[i] = ptr;
+    ptr += sz3;
+  }
+  return arr;
+}
+
+
 __global__ void mover_kernel(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param, int len) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= len) return;
