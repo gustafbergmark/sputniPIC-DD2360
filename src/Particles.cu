@@ -108,18 +108,26 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
         ix = 2 +  int((part->x[i] - grd->xStart)*grd->invdx);
         iy = 2 +  int((part->y[i] - grd->yStart)*grd->invdy);
         iz = 2 +  int((part->z[i] - grd->zStart)*grd->invdz);
+
+        if (i == 0) printf("checkpoint 2.1\n");
+
         
         // calculate weights
         xi[0]   = part->x[i] - grd->XN[ix - 1][iy][iz];
         eta[0]  = part->y[i] - grd->YN[ix][iy - 1][iz];
         zeta[0] = part->z[i] - grd->ZN[ix][iy][iz - 1];
+        if (i == 0) printf("checkpoint 2.2\n");
         xi[1]   = grd->XN[ix][iy][iz] - part->x[i];
         eta[1]  = grd->YN[ix][iy][iz] - part->y[i];
         zeta[1] = grd->ZN[ix][iy][iz] - part->z[i];
+        if (i == 0) printf("checkpoint 2.3\n");
         for (int ii = 0; ii < 2; ii++)
             for (int jj = 0; jj < 2; jj++)
                 for (int kk = 0; kk < 2; kk++)
                     weight[ii][jj][kk] = xi[ii] * eta[jj] * zeta[kk] * grd->invVOL;
+        
+        if (i == 0) printf("checkpoint 2.4\n");
+
         
         // set to zero local electric and magnetic field
         Exl=0.0, Eyl = 0.0, Ezl = 0.0, Bxl = 0.0, Byl = 0.0, Bzl = 0.0;
@@ -169,7 +177,7 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
     //////////
     //////////
     ////////// BC
-        if (i == 0) printf("checkpoint 5\n");
+    if (i == 0) printf("checkpoint 5\n");
                                 
     // X-DIRECTION: BC particles
     if (part->x[i] > grd->Lx){
@@ -235,7 +243,7 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
 int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param) {
     // print species and subcycling
     std::cout << "***  MOVER with SUBCYCLYING "<< param->n_sub_cycles << " - species " << part->species_ID << " ***" << std::endl;
-    std::cout << "npmax "<< part->npmax << " nop " << part->nop << std::endl;
+    std::cout << "npmax "<< part->npmax << " nop " << part->nop << " NIterMover " << part->NiterMover <<std::endl;
 
     int TPB = 512;
     int blocks = (part->nop - 1) / TPB + 1;
