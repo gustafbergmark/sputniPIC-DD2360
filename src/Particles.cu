@@ -74,9 +74,10 @@ void particle_deallocate(struct particles* part)
 }
 
 __global__ void mover_kernel(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param, int len) {
-    //int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int i = 0;
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= len) return;
+
+    std::cout << "checkpoint 1" << std::endl;
 
      // auxiliary variables
     FPpart dt_sub_cycling = (FPpart) param->dt/((double) part->n_sub_cycles);
