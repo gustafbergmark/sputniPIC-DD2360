@@ -3,6 +3,7 @@
 #include "Copy.h"
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <stdio.h>
 
 /** allocate particle arrays */
 void particle_allocate(struct parameters* param, struct particles* part, int is)
@@ -77,7 +78,7 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= len) return;
 
-    std::cout << "checkpoint 1" << std::endl;
+    printf("checkpoint 1");
 
      // auxiliary variables
     FPpart dt_sub_cycling = (FPpart) param->dt/((double) part->n_sub_cycles);
