@@ -138,12 +138,12 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
         for (int ii=0; ii < 2; ii++)
             for (int jj=0; jj < 2; jj++)
                 for(int kk=0; kk < 2; kk++){
-                    Exl += weight[ii][jj][kk]*field->Ex[ix- ii][iy -jj][iz- kk ];
-                    Eyl += weight[ii][jj][kk]*field->Ey[ix- ii][iy -jj][iz- kk ];
-                    Ezl += weight[ii][jj][kk]*field->Ez[ix- ii][iy -jj][iz -kk ];
-                    Bxl += weight[ii][jj][kk]*field->Bxn[ix- ii][iy -jj][iz -kk ];
-                    Byl += weight[ii][jj][kk]*field->Byn[ix- ii][iy -jj][iz -kk ];
-                    Bzl += weight[ii][jj][kk]*field->Bzn[ix- ii][iy -jj][iz -kk ];
+                    Exl += weight[ii][jj][kk]*field->Ex_flat[((ix-ii)* grd->nyn * grd-> nzn) + ((iy-jj) * grd->nzn) + (iz-kk)];
+                    Eyl += weight[ii][jj][kk]*field->Ey_flat[((ix-ii)* grd->nyn * grd-> nzn) + ((iy-jj) * grd->nzn) + (iz-kk)];
+                    Ezl += weight[ii][jj][kk]*field->Ez_flat[((ix-ii)* grd->nyn * grd-> nzn) + ((iy-jj) * grd->nzn) + (iz-kk)];
+                    Bxl += weight[ii][jj][kk]*field->Bxn_flat[((ix-ii)* grd->nyn * grd-> nzn) + ((iy-jj) * grd->nzn) + (iz-kk)];
+                    Byl += weight[ii][jj][kk]*field->Byn_flat[((ix-ii)* grd->nyn * grd-> nzn) + ((iy-jj) * grd->nzn) + (iz-kk)];
+                    Bzl += weight[ii][jj][kk]*field->Bzn_flat[((ix-ii)* grd->nyn * grd-> nzn) + ((iy-jj) * grd->nzn) + (iz-kk)];
                 }
         
         // end interpolation
