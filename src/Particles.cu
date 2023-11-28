@@ -252,9 +252,7 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     }
     // Sync
     cudaDeviceSynchronize();
-
-    get_grid(&gpu_grid, grd, gpu_grid_ptr);
-    get_field(&gpu_field, field, gpu_field_ptr, count);
+    // Only particles are updated
     get_particles(&gpu_part, part, gpu_part_ptr, count);
                                                                         
     return(0); // exit succcesfully
