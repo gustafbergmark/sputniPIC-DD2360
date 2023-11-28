@@ -2,14 +2,8 @@
 
 
 // Copies result back to CPU and deallocates
-void get_grid(struct grid* gpu_grid, struct grid* cpu_grid, struct grid* gpu_grid_ptr) {
+void dealloc_grid(struct grid* gpu_grid, struct grid* gpu_grid_ptr) {
   int len = sizeof(FPpart) * gpu_grid->nxn * gpu_grid->nyn * gpu_grid->nzn;
-
-  // Get result
-  cudaMemcpy(cpu_grid->XN_flat, gpu_grid->XN_flat, len, cudaMemcpyDeviceToHost);
-  cudaMemcpy(cpu_grid->YN_flat, gpu_grid->YN_flat, len, cudaMemcpyDeviceToHost);
-  cudaMemcpy(cpu_grid->ZN_flat, gpu_grid->ZN_flat, len, cudaMemcpyDeviceToHost);
-
   // Deallocate
   cudaFree(gpu_grid->XN_flat);
   cudaFree(gpu_grid->YN_flat);
@@ -67,15 +61,7 @@ void transfer_field(struct EMfield* cpu_field, struct EMfield* gpu_field, struct
 }
 
 // Copies result back to CPU and deallocates
-void get_field(struct EMfield* gpu_field, struct EMfield* cpu_field, struct EMfield* gpu_field_ptr, size_t count) {
-    // Copy
-  cudaMemcpy(cpu_field->Ex_flat, gpu_field->Ex_flat, count * sizeof(FPpart), cudaMemcpyDeviceToHost);
-  cudaMemcpy(cpu_field->Ey_flat, gpu_field->Ey_flat, count * sizeof(FPpart), cudaMemcpyDeviceToHost);
-  cudaMemcpy(cpu_field->Ez_flat, gpu_field->Ez_flat, count * sizeof(FPpart), cudaMemcpyDeviceToHost);
-  cudaMemcpy(cpu_field->Bxn_flat, gpu_field->Bxn_flat, count * sizeof(FPpart), cudaMemcpyDeviceToHost);
-  cudaMemcpy(cpu_field->Byn_flat, gpu_field->Byn_flat, count * sizeof(FPpart), cudaMemcpyDeviceToHost);
-  cudaMemcpy(cpu_field->Bzn_flat, gpu_field->Bzn_flat, count * sizeof(FPpart), cudaMemcpyDeviceToHost);
-
+void dealloc_field(struct EMfield* gpu_field, struct EMfield* gpu_field_ptr, size_t count) {
   // Deallocate
   cudaFree(gpu_field->Ex_flat);
   cudaFree(gpu_field->Ey_flat);

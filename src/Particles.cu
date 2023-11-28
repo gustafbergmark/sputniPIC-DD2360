@@ -260,6 +260,9 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     cudaDeviceSynchronize();
     // Only particles are updated
     get_particles(&gpu_part, part, gpu_part_ptr, count);
+    dealloc_grid(&gpu_grid, gpu_grid_ptr);
+    dealloc_field(&gpu_field, gpu_field_ptr, count);
+    cudaFree(gpu_param_ptr);
                                                                         
     return(0); // exit succcesfully
     
