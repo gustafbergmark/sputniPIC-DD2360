@@ -245,7 +245,7 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
 
     particles gpu_part;
     particles* gpu_part_ptr;
-    transfer_particles(part, &gpu_part, &gpu_part_ptr, part->nop);
+    transfer_particles(part, &gpu_part, &gpu_part_ptr, part->npmax);
 
     // start subcycling
     for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
@@ -257,7 +257,7 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     // Sync
     cudaDeviceSynchronize();
     // Only particles are updated
-    get_particles(&gpu_part, part, gpu_part_ptr, part->nop);
+    get_particles(&gpu_part, part, gpu_part_ptr, part->npmax);
     dealloc_grid(&gpu_grid, gpu_grid_ptr);
     dealloc_field(&gpu_field, gpu_field_ptr, count);
     cudaFree(gpu_param_ptr);
