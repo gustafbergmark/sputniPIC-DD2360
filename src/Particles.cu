@@ -118,9 +118,9 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
         eta[0]  = part->y[i] - grd->YN_flat[(ix * grd->nyn * grd-> nzn) + ((iy - 1) * grd->nzn) + iz];
         zeta[0] = part->z[i] - grd->ZN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz - 1];
         if (i == 0) printf("checkpoint 2.2\n");
-        xi[1]   = grd->XN[ix][iy][iz] - part->x[i];
-        eta[1]  = grd->YN[ix][iy][iz] - part->y[i];
-        zeta[1] = grd->ZN[ix][iy][iz] - part->z[i];
+        xi[1]   = grd->XN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz] - part->x[i];
+        eta[1]  = grd->YN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz] - part->y[i];
+        zeta[1] = grd->ZN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz] - part->z[i];
         if (i == 0) printf("checkpoint 2.3\n");
         for (int ii = 0; ii < 2; ii++)
             for (int jj = 0; jj < 2; jj++)
