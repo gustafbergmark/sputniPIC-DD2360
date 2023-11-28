@@ -23,6 +23,11 @@ void transfer_grid(struct grid* cpu_grid, struct grid* gpu_grid,
   cudaMalloc(&gpu_grid->ZN_flat, count);
   cudaMalloc(gpu_grid_ptr, sizeof(grid));
 
+  // update unflattened pointer
+  gpu_grid->XN = (FPpart***)gpu_grid->XN_flat;
+  gpu_grid->YN = (FPpart***)gpu_grid->YN_flat;
+  gpu_grid->ZN = (FPpart***)gpu_grid->ZN_flat;
+
   // Copy
   cudaMemcpy(gpu_grid->XN_flat, cpu_grid->XN_flat, count, cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_grid->YN_flat, cpu_grid->YN_flat, count, cudaMemcpyHostToDevice);
