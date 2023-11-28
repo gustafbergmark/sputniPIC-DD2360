@@ -250,6 +250,8 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
         mover_kernel<<<blocks, TPB>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
     }
+    // Sync
+    cudaDeviceSynchronize();
 
     get_grid(&gpu_grid, grd, gpu_grid_ptr);
     get_field(&gpu_field, field, gpu_field_ptr, count);
