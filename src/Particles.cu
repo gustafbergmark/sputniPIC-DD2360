@@ -233,18 +233,18 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
     size_t count = grd->nxn * grd->nyn * grd->nzn;
 
     grid gpu_grid;
-    grid* gpu_grid_ptr;
+    grid* gpu_grid_ptr = nullptr;
     transfer_grid(grd, &gpu_grid, &gpu_grid_ptr);
 
     EMfield gpu_field;
-    EMfield* gpu_field_ptr;
+    EMfield* gpu_field_ptr = nullptr;
     transfer_field(field, &gpu_field, &gpu_field_ptr, count);
 
     parameters* gpu_param_ptr;
     transfer_param(param, &gpu_param_ptr);
 
     particles gpu_part;
-    particles* gpu_part_ptr;
+    particles* gpu_part_ptr = nullptr;
     transfer_particles(part, &gpu_part, &gpu_part_ptr, count);    
     // start subcycling
     for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
