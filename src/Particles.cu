@@ -77,9 +77,6 @@ void particle_deallocate(struct particles* part)
 __global__ void mover_kernel(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param, int len) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= len) return;
-
-    if (i == 0) printf("checkpoint 1\n");
-
      // auxiliary variables
     FPpart dt_sub_cycling = (FPpart) param->dt/((double) part->n_sub_cycles);
     FPpart dto2 = .5*dt_sub_cycling, qomdt2 = part->qom*dto2/param->c;
@@ -100,7 +97,6 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
     xptilde = part->x[i];
     yptilde = part->y[i];
     zptilde = part->z[i];
-    if (i == 0) printf("checkpoint 2\n");
 
     // calculate the average velocity iteratively
     for(int innter=0; innter < part->NiterMover; innter++){
@@ -108,32 +104,23 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
         ix = 2 +  int((part->x[i] - grd->xStart)*grd->invdx);
         iy = 2 +  int((part->y[i] - grd->yStart)*grd->invdy);
         iz = 2 +  int((part->z[i] - grd->zStart)*grd->invdz);
-
-        if (i == 0) printf("checkpoint 2.1\n");
-
         
         // calculate weights
         xi[0]   = part->x[i] - grd->XN_flat[((ix - 1) * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz];
-        if (i == 0) printf("checkpoint 2.1.1\n");
         eta[0]  = part->y[i] - grd->YN_flat[(ix * grd->nyn * grd-> nzn) + ((iy - 1) * grd->nzn) + iz];
         zeta[0] = part->z[i] - grd->ZN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz - 1];
-        if (i == 0) printf("checkpoint 2.2\n");
+
         xi[1]   = grd->XN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz] - part->x[i];
         eta[1]  = grd->YN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz] - part->y[i];
         zeta[1] = grd->ZN_flat[(ix * grd->nyn * grd-> nzn) + (iy * grd->nzn) + iz] - part->z[i];
-        if (i == 0) printf("checkpoint 2.3\n");
         for (int ii = 0; ii < 2; ii++)
             for (int jj = 0; jj < 2; jj++)
                 for (int kk = 0; kk < 2; kk++)
                     weight[ii][jj][kk] = xi[ii] * eta[jj] * zeta[kk] * grd->invVOL;
-        
-        if (i == 0) printf("checkpoint 2.4\n");
 
         
         // set to zero local electric and magnetic field
         Exl=0.0, Eyl = 0.0, Ezl = 0.0, Bxl = 0.0, Byl = 0.0, Bzl = 0.0;
-
-        if (i == 0) printf("checkpoint 3\n");
 
         for (int ii=0; ii < 2; ii++)
             for (int jj=0; jj < 2; jj++)
@@ -154,7 +141,6 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
         vt= part->v[i] + qomdt2*Eyl;
         wt= part->w[i] + qomdt2*Ezl;
         udotb = ut*Bxl + vt*Byl + wt*Bzl;
-        if (i == 0) printf("checkpoint 4\n");
         // solve the velocity equation
         uptilde = (ut+qomdt2*(vt*Bzl -wt*Byl + qomdt2*udotb*Bxl))*denom;
         vptilde = (vt+qomdt2*(wt*Bxl -ut*Bzl + qomdt2*udotb*Byl))*denom;
@@ -178,7 +164,6 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
     //////////
     //////////
     ////////// BC
-    if (i == 0) printf("checkpoint 5\n");
                                 
     // X-DIRECTION: BC particles
     if (part->x[i] > grd->Lx){
@@ -244,7 +229,6 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
 int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd, struct parameters* param) {
     // print species and subcycling
     std::cout << "***  MOVER with SUBCYCLYING "<< param->n_sub_cycles << " - species " << part->species_ID << " ***" << std::endl;
-    std::cout << "npmax "<< part->npmax << " nop " << part->nop << " NIterMover " << part->NiterMover <<std::endl;
 
     int TPB = 512;
     int blocks = (part->nop - 1) / TPB + 1;
@@ -268,7 +252,7 @@ int mover_PC_gpu(struct particles* part, struct EMfield* field, struct grid* grd
 
     // start subcycling
     for (int i_sub=0; i_sub <  part->n_sub_cycles; i_sub++){
-        mover_kernel<<<1,1>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
+        mover_kernel<<<blocks, TPB>>>(gpu_part_ptr, gpu_field_ptr, gpu_grid_ptr, gpu_param_ptr, part->nop);
         // Sync
         cudaDeviceSynchronize();
         cudaError_t err = cudaGetLastError();
