@@ -78,7 +78,7 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= len) return;
 
-    printf("checkpoint 1");
+    if (i == 0) printf("checkpoint 1\n");
 
      // auxiliary variables
     FPpart dt_sub_cycling = (FPpart) param->dt/((double) part->n_sub_cycles);
@@ -100,6 +100,8 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
     xptilde = part->x[i];
     yptilde = part->y[i];
     zptilde = part->z[i];
+    if (i == 0) printf("checkpoint 2\n");
+
     // calculate the average velocity iteratively
     for(int innter=0; innter < part->NiterMover; innter++){
         // interpolation G-->P
@@ -121,7 +123,9 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
         
         // set to zero local electric and magnetic field
         Exl=0.0, Eyl = 0.0, Ezl = 0.0, Bxl = 0.0, Byl = 0.0, Bzl = 0.0;
-        
+
+        if (i == 0) printf("checkpoint 3\n");
+
         for (int ii=0; ii < 2; ii++)
             for (int jj=0; jj < 2; jj++)
                 for(int kk=0; kk < 2; kk++){
@@ -141,6 +145,7 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
         vt= part->v[i] + qomdt2*Eyl;
         wt= part->w[i] + qomdt2*Ezl;
         udotb = ut*Bxl + vt*Byl + wt*Bzl;
+        if (i == 0) printf("checkpoint 4\n");
         // solve the velocity equation
         uptilde = (ut+qomdt2*(vt*Bzl -wt*Byl + qomdt2*udotb*Bxl))*denom;
         vptilde = (vt+qomdt2*(wt*Bxl -ut*Bzl + qomdt2*udotb*Byl))*denom;
@@ -164,6 +169,7 @@ __global__ void mover_kernel(struct particles* part, struct EMfield* field, stru
     //////////
     //////////
     ////////// BC
+        if (i == 0) printf("checkpoint 5\n");
                                 
     // X-DIRECTION: BC particles
     if (part->x[i] > grd->Lx){
